@@ -716,7 +716,7 @@ public class AlzheimersInclusions extends JPanel
          updateImage();
       }
       finalizeImage();
-      printCellCoordinates();
+      printCoordinates();
       running = false;
       runMenuItem.setEnabled(true);
       abortMenuItem.setEnabled(false);
@@ -765,12 +765,13 @@ public class AlzheimersInclusions extends JPanel
 
 
    /**
-    * Print cell coordinates.
+    * Print cell and inclusion coordinates.
     */
-   private void printCellCoordinates()
+   private void printCoordinates()
    {
       if (currentImage != null)
       {
+         // Print cell coordinates.
          boolean[][] markers = new boolean[imageWidth][imageHeight];
          for (int x = 0; x < imageWidth; x++)
          {
@@ -811,7 +812,59 @@ public class AlzheimersInclusions extends JPanel
                }
             }
          }
-         System.out.println("Cell coordinates:");
+         System.out.println("Cell (blue blob) coordinates:");
+         for (int x = 0; x < imageWidth; x++)
+         {
+            for (int y = 0; y < imageHeight; y++)
+            {
+               if (markers[x][y])
+               {
+                  System.out.println(x + "," + y);
+               }
+            }
+         }
+
+         // Print inclusion coordinates.
+         for (int x = 0; x < imageWidth; x++)
+         {
+            for (int y = 0; y < imageHeight; y++)
+            {
+               if (isRed(currentImage.getRGB(x, y)))
+               {
+                  markers[x][y] = true;
+               }
+               else
+               {
+                  markers[x][y] = false;
+               }
+            }
+         }
+         for (int x = 0; x < imageWidth; x++)
+         {
+            for (int y = 0; y < imageHeight; y++)
+            {
+               if (markers[x][y])
+               {
+                  for (int x2 = x - 1; x2 <= x + 1; x2++)
+                  {
+                     for (int y2 = y - 1; y2 <= y + 1; y2++)
+                     {
+                        if ((x2 >= 0) && (x2 < imageWidth) && (y2 >= 0) && (y2 < imageHeight))
+                        {
+                           if ((x != x2) || (y != y2))
+                           {
+                              if (markers[x2][y2])
+                              {
+                                 markers[x][y] = false;
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         System.out.println("Inclusion (red dot) coordinates:");
          for (int x = 0; x < imageWidth; x++)
          {
             for (int y = 0; y < imageHeight; y++)

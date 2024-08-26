@@ -13,4 +13,4 @@ build.sh/build.bat
 
 To run:
 
-run.sh/run.bat
+run.sh/run.bat Composite.png
